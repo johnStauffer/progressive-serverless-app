@@ -1,0 +1,26 @@
+{
+  "name": "progressive-serverless-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "uuid": "^3.3.3",
+    "aws-sdk": "^2.552.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.12.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnStauffer/progressive-serverless-app.git"
+  },
+  "author": "John Stauffer, Dean Gilewicz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johnStauffer/progressive-serverless-app/issues"
+  },
+  "homepage": "https://github.com/johnStauffer/progressive-serverless-app#readme"
+}
