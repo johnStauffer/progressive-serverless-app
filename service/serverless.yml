@@ -18,7 +18,7 @@ custom:
 
 functions:
   registeredOnly:
-    handler: handler.hiUsers
+    handler: lambdas/cognitotest.hiUsers
     events:
       - http:
           path: /hiUsers
@@ -38,7 +38,7 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: true
   guests:
-    handler: handler.hiGuests
+    handler: lambdas/cognitotest.hiGuests
     events:
       - http:
           path: /hiAll
