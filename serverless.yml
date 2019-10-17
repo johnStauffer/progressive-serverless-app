@@ -7,10 +7,11 @@ service: progressive-serverless-app
 provider:
   name: aws
   runtime: nodejs10.x
+  region: us-west-2
 
 functions:
   helloWorld:
-    handler: handler.helloWorld
+    handler: src/lambdas/helloworld.helloWorld
     # The `events` block defines how to trigger the handler.helloWorld code
     events:
       - http:
