@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+{{> global-head}}
+<body>
+	<header class="container container-small">
+		<h1>My Home</h1>
+	</header>
+	<main id="main" class="container container-small">
+		<h2>Edit Account</h2>
+		<div class="link-wrapper">
+			<a href="/account-profile.html">My Account</a>
+		</div>
+		<div class="content-wrapper">
+			<div class="user-profile">
+				<div class="user-image-wrapper">
+					<img src="" class="user-image" />
+				</div>
+				<div class="user-detail-wrapper">
+					<div class="user-name">
+						<h3>__userName__</h3>
+					</div>
+					<div class="user-phone">
+						<p>__userPhone__</p>
+					</div>
+					<div class="user-address">
+						<p>__streetAddress__</p>
+						<p>__city__</p>
+						<p>__state__</p>
+						<p>__zip__</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
+	<script type="text/javascript">
+		function updateUser(user) {
+
+		}
+
+		function changePassword(user) {
+				
+		}
+		
+		var form = document.querySelector('#js-form-create-account');	
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			var user = {
+				emailAddress: form.elements['email_address'].value,
+				phoneNumber: form.elements['phone_number'].value,
+				password: form.elements['password'].value
+			};
+			registerUser(user);
+		});
+	</script>
+</body>

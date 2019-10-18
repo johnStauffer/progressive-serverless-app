@@ -13,9 +13,13 @@
 		<!-- PWA -->
 		<link rel="manifest" href="/manifest.json" />
 	</head>	<body id="home-projects">
+		<header>
+			<button id="js-logout" class="btn">Logout</button>
+		</header>
 		<main id="js-partial-projects" class="container container-small">
 		</main>
 		<script src="/js/atomic.polyfills.min.js"></script>
+		<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
 		<script>
 			var numberOfProjects = 1;
 			if( numberOfProjects > 0 ) {
@@ -51,6 +55,25 @@
 					// console.log(error.statusText); // xhr.statusText
 				});
 			}
+
+			function logout() {
+				var poolData = {
+					UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
+					ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
+				};
+				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+				// get current user based on local storage
+				var cognitoUser = userPool.getCurrentUser();
+				if( cognitoUser != null ) {
+					cognitoUser.signOut();
+					window.location.href = "/";
+				}
+			}
+			var btnLogout = document.querySelector('#js-logout');
+			btnLogout.addEventListener('click', function(e) {
+				e.preventDefault();
+				logout();
+			});
 		</script>
 	</body>
 </html>

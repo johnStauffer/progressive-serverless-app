@@ -12,8 +12,7 @@
 	<link rel="stylesheet" href="/css/main.min.css" type="text/css" />
 	<!-- PWA -->
 	<link rel="manifest" href="/manifest.json" />
-</head>
-<body>
+</head><body>
 	<header class="container container-small">
 		<h1>My Home</h1>
 	</header>
@@ -92,6 +91,9 @@
 					var idToken = result.idToken.jwtToken;
 					console.log('accessToken', accessToken);
 					console.log('idToken', idToken);
+
+					window.location.href = '/home-projects.html';
+
 					/*
 					//POTENTIAL: Region needs to be set if not already set previously elsewhere.
 					AWS.config.region = 'us-east-1';
