@@ -20,30 +20,6 @@
 			<h2>Create Account</h2>
 			<form id="js-form-create-account" action="" method="POST" class="">
 				<div class="input-wrapper">
-					<label for="first-name">First Name</label>
-					<input id="first-name" type="text" name="first_name" class="input" />
-				</div>
-				<div class="input-wrapper">
-					<label for="last-name">Last Name</label>
-					<input id="last-name" type="text" name="last_name" class="input" />
-				</div>
-				<div class="input-wrapper">
-					<label for="street-address">Street Address</label>
-					<input id="street-address" type="text" name="street_address" class="input" />
-				</div>
-				<div class="input-wrapper">
-					<label for="city-address">City</label>
-					<input id="city-address" type="text" name="city_address" class="input" />
-				</div>
-				<div class="input-wrapper">
-					<label for="state-address">State</label>
-					<input id="state-address" type="text" name="state_address" class="input" />
-				</div>
-				<div class="input-wrapper">
-					<label for="zip-address">Zip</label>
-					<input id="zip-address" type="text" name="zip_address" class="input" />
-				</div>
-				<div class="input-wrapper">
 					<label for="email-address">Email Address</label>
 					<input id="email-address" type="text" name="email_address" class="input" />
 				</div>
@@ -75,8 +51,8 @@
 		<script type="text/javascript">
 			function registerUser(user) {
 				var poolData = {
-					UserPoolId: 'us-east-1_MtlgYMnLG', // Your user pool id here
-					ClientId: '7koj2f36b7ouj4a3kvn5n71qb8' // Your client id here
+					UserPoolId: 'us-east-1_8CV7DHfIl', // Your user pool id here
+					ClientId: '18dk7qmcdfcgnqeqg3gfdb76rk' // Your client id here
 				};
 				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
@@ -106,6 +82,7 @@
 					}
 					var cognitoUser = result.user;
 					console.log('user name is ' + cognitoUser.getUsername());
+					/* redirect to account confirmation */
 					window.location.href = '/account-confirmation.html';
 				});
 			}
