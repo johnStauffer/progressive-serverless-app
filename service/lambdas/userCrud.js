@@ -1,62 +1,39 @@
 const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB({ region: 'us-east-2', apiVersion: '2012-08-10' });
+const dynamodb = new AWS.DynamoDB({ region: 'us-east-1', apiVersion: '2012-08-10' });
 
 module.exports.createUser = (event, context, callback) => {
-    // TODO build a body mapping template
-    // var registrationJson = JSON.parse(event.body);
-    // const params = {
-    //     Item: {
-    //         "UserId": {
-    //             S: registrationJson.userId
-    //         },
-    //         "FirstName": {
-    //             S: registrationJson.firstName
-    //         },
-    //         "LastName": {
-    //             S: registrationJson.lastName
-    //         },
-    //         "EmailAddress": {
-    //             S: registrationJson.emailAddress
-    //         },
-    //         "PhoneNumber": {
-    //             S: registrationJson.phoneNumber
-    //         }
-    //     },
-    //     // TODO get this from environment variable
-    //     TableName: "users-dev"
-    // };
-
-    const hardParams = {
+    var registrationJson = JSON.parse(event.body);
+    const params = {
         Item: {
-            "UserId": {
-                S: "1235"
+            "userId": {
+                S: registrationJson.userId
             },
-            "FirstName": {
-                S: "john"
+            "firstName": {
+                S: registrationJson.firstName
             },
-            "LastName": {
-                S: "stauffer"
+            "lastName": {
+                S: registrationJson.lastName
             },
-            "EmailAddress": {
-                S: "asdfasd"
+            "emailAddress": {
+                S: registrationJson.emailAddress
             },
-            "PhoneNumber": {
-                S: "asdfasdf"
+            "phoneNumber": {
+                S: registrationJson.phoneNumber
             }
         },
         // TODO get this from environment variable
         TableName: "users-dev"
     };
 
-    console.log(hardParams);
+    console.log(params);
 
-    dynamodb.putItem(hardParams, function(err, data) {
+    dynamodb.putItem(params, function(err, data) {
         if (err) {
             console.log(err);
             callback(err);
         }
         else {
-            console.log(hardParams);
+            console.log(params);
             console.log(data);
             callback(null, data);
         }

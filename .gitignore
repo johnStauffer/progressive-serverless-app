@@ -7,3 +7,9 @@ jspm_packages
 
 #vscode
 *.code-workspace
+
+# Mac
+.DS_Store
+
+# Intellij
+.idea
