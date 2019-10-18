@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	{{> global-head}}
+	<body>
+		<header class="container container-small">
+			<h1>My Home</h1>
+		</header>
+		<main id="main" class="container container-small">
+			<h2>Confirm Account</h2>
+			<form id="js-form-account-confirmation" action="" method="POST" class="">
+				<div class="input-wrapper">
+					<label for="confirmation-code">Confirmation Code</label>
+					<input id="confirmation-code" type="password" name="confirmation_code" class="input" />
+				</div>
+				<div class="input-wrapper">
+					<input type="submit" value="Confirm Account" class="input" />
+				</div>
+			</form>
+		</main>
+		<footer>
+			
+		</footer>
+		<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
+		<script type="text/javascript">
+			function confirmUser(user, main) {
+				var poolData = {
+					UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
+					ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
+				};
+				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+				// get current user based on local storage
+				var cognitoUser = userPool.getCurrentUser();
+				// if no user then ask email
+				if( cognitoUser != null ) {
+					cognitoUser.getSession(function(err, session) {
+						if (err) {
+							alert(err.message || JSON.stringify(err));
+							return;
+						}
+						console.log('session validity: ' + session.isValid());
+					});
+				} else {
+					// created update form DOM
+					var updatedFormHTML = `
+						<h2>Confirm Account</h2>
+						<form id="js-form-account-confirmation-both" action="" method="POST" class="">
+							<div class="input-wrapper">
+								<label for="email-address">Email Address</label>
+								<input id="email-address" type="email" name="email_address" class="input" />
+							</div>
+							<div class="input-wrapper">
+								<label for="confirmation-code">Confirmation Code</label>
+								<input id="confirmation-code" type="password" name="confirmation_code" class="input" />
+							</div>
+							<div class="input-wrapper">
+								<input type="submit" value="Confirm Account" class="input" />
+							</div>
+						</form>
+					`;
+					// update DOM with email address input
+					main.innerHTML = updatedFormHTML;
+					formNew = main.querySelector('#js-form-account-confirmation-both');
+					// set up a new event listener
+					formNew.addEventListener('submit', function(e) {
+						e.preventDefault();
+						// get new reference to form to include email address input
+						var userBoth = {
+							emailAddress: formNew.elements['email_address'].value,
+							confirmationCode: formNew.elements['confirmation_code'].value
+						};
+						var userData = {
+							Username : userBoth.emailAddress,
+							Pool : userPool
+						};
+						cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+						cognitoUser.confirmRegistration(userBoth.confirmationCode, true, function(err, result) {
+							if (err) {
+								alert(err.message || JSON.stringify(err));
+								return;
+							}
+							console.log(result); // SUCCESS
+							window.location.href = '/'; // redirect to login
+						});
+					});
+				}
+			}
+			var mainEl = document.querySelector('#main');
+			var form = document.querySelector('#js-form-account-confirmation');
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+				var user = {
+					confirmationCode: form.elements['confirmation_code'].value
+				};
+				confirmUser(user, mainEl);
+			});
+		</script>
+	</body>
+</html>

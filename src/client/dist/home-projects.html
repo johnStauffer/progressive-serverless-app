@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="My Home: An application for homeowners" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+		<title>My Home</title>
+		<!-- Icons -->
+		<link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+		<!-- Stylesheet -->
+		<link rel="stylesheet" href="/css/main.min.css" type="text/css" />
+		<!-- PWA -->
+		<link rel="manifest" href="/manifest.json" />
+	</head>	<body id="home-projects">
+		<main id="js-partial-projects" class="container container-small">
+		</main>
+		<script src="/js/atomic.polyfills.min.js"></script>
+		<script>
+			var numberOfProjects = 1;
+			if( numberOfProjects > 0 ) {
+				atomic('http://localhost:3000/home-partial-some-projects.html')
+				.then(function (response) {
+					// console.log(response);
+					// console.log(response.data); // xhr.responseText
+					// console.log(response.xhr);  // full response
+					var dynamicContentArea = document.querySelector('#js-partial-projects');
+					if( dynamicContentArea ) {
+						dynamicContentArea.innerHTML = response.data;
+					}
+				})
+				.catch(function (error) {
+					console.error(error);
+					// console.log(error.status); // xhr.status
+					// console.log(error.statusText); // xhr.statusText
+				});
+			} else {
+				atomic('http://localhost:3000/home-partial-no-projects.html')
+				.then(function (response) {
+					// console.log(response);
+					// console.log(response.data); // xhr.responseText
+					// console.log(response.xhr);  // full response
+					var dynamicContentArea = document.querySelector('#js-partial-projects');
+					if( dynamicContentArea ) {
+						dynamicContentArea.innerHTML = response.data;
+					}
+				})
+				.catch(function (error) {
+					console.error(error);
+					// console.log(error.status); // xhr.status
+					// console.log(error.statusText); // xhr.statusText
+				});
+			}
+		</script>
+	</body>
+</html>
+
+

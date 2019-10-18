@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="My Home: An application for homeowners" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>My Home</title>
+	<!-- Icons -->
+	<link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+	<!-- Stylesheet -->
+	<link rel="stylesheet" href="/css/main.min.css" type="text/css" />
+	<!-- PWA -->
+	<link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+	<header class="container container-small">
+		<h1>My Home</h1>
+	</header>
+	<main id="main" class="container container-small">
+		<h2>Create Project</h2>
+		<form id="js-form-project-create" action="" method="POST" class="">
+			<div class="input-wrapper">
+				<label for="project-type">Type Of Project</label>
+				<select id="project-type" name="project_type">
+					<option value="">-</option>
+					<option value="bathroom-remodel">Bathroom Remodel</option>
+					<option value="garage-remodel">Garage Remodel</option>
+					<option value="kitchen-remodel">Kitchen Remodel</option>
+					<option value="rooftop-remodel">Rooftop Remodel</option>
+				</select>
+			</div>
+			<div class="input-wrapper">
+				<label for="project-contact-day">Preferred Contact Day</label>
+				<select id="project-contact-day" name="project_contact_day">
+					<option value="">-</option>
+					<option value="monday">Monday</option>
+					<option value="tuesday">Tuesday</option>
+					<option value="wednesday">Wednesday</option>
+					<option value="thursday">Thursday</option>
+					<option value="friday">Friday</option>
+					<option value="saturday">Saturday</option>
+					<option value="sunday">Sunday</option>
+				</select>
+			</div>
+			<div class="input-wrapper">
+				<label for="project-contact-time">Preferred Contact Time</label>
+				<select id="project-contact-time" name="project_contact_time">
+					<option value="">-</option>
+					<option value="morning">Morning</option>
+					<option value="afternoon">Afternoon</option>
+					<option value="evening">Evening</option>
+				</select>
+			</div>
+			<div class="input-wrapper">
+				<label for="project-description">Project Description</label>
+				<textarea id="project-description" name="project_description" class="input" rows="8" columns="4"
+					resize></textarea>
+			</div>
+			<div class="input-wrapper">
+				<label for="project-pictures">Project Pictures</label>
+				<input id="project-pictures" type="file" name="project_pictures" class="input" multiple />
+			</div>
+			<div id='file-list-display'></div>
+			<div class="input-wrapper">
+				<input type="submit" value="Create Project" class="input" />
+			</div>
+		</form>
+	</main>
+	<footer>
+
+	</footer>
+	<script src="/js/atomic.polyfills.min.js"></script>
+	<script type="text/javascript">
+
+
+
+
+		var form = document.querySelector('#js-form-project-create');
+		var fileInput = document.getElementById('project-pictures');
+		var fileListDisplay = document.getElementById('file-list-display');
+		var fileList = [];
+		var renderFileList;
+		var sendFile;
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var projectDetails = {
+				projectType: form.elements['project_type'].value,
+				projectContactDay: form.elements['project_contact_day'].value,
+				projectContactTime: form.elements['project_contact_time'].value,
+				projectDescription: form.elements['project_description'].value,
+				projectPictures: form.elements['project_pictures'].value
+			};
+			console.log(projectDetails);
+			fileList.forEach(function(file) {
+				sendFile(file);
+			});
+		});
+
+		fileInput.addEventListener('change', function (evnt) {
+			fileList = [];
+			for (var i = 0; i < fileInput.files.length; i++) {
+				fileList.push(fileInput.files[i]);
+			}
+			renderFileList();
+		});
+
+		function renderFileList() {
+			fileListDisplay.innerHTML = '';
+			fileList.forEach(function (file, index) {
+				var fileDisplayEl = document.createElement('p');
+				fileDisplayEl.innerHTML = (index + 1) + ': ' + file.name;
+				fileListDisplay.appendChild(fileDisplayEl);
+			});
+		};
+
+		function sendFile(file) {
+			console.log('send file', file);
+			/*
+			atomic('')
+				.then(function (response) {
+					// console.log(response);
+					// console.log(response.data); // xhr.responseText
+					// console.log(response.xhr);  // full response
+					var dynamicContentArea = document.querySelector('#js-partial-projects');
+					if( dynamicContentArea ) {
+						dynamicContentArea.innerHTML = response.data;
+					}
+				})
+				.catch(function (error) {
+					console.error(error);
+					// console.log(error.status); // xhr.status
+					// console.log(error.statusText); // xhr.statusText
+				});
+			*/
+		};
+
+	</script>
+</body>
+
+</html>

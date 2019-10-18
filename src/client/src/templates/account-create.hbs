@@ -45,7 +45,7 @@
 					<input id="password" type="password" name="password" class="input" />
 				</div>
 				<div class="input-wrapper">
-					<input type="submit" value="Create Account" class="input" />
+					<input type="submit" value="Register" class="input" />
 				</div>
 				<div class="input-wrapper row row-between">
 					<div class="link-wrapper">
@@ -60,5 +60,53 @@
 		<footer>
 			
 		</footer>
+		<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
+		<script type="text/javascript">
+			function registerUser(user) {
+				var poolData = {
+					UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
+					ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
+				};
+				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+				var attributeList = [];
+
+				var dataEmail = {
+					Name: 'email',
+					Value: user.emailAddress
+				};
+
+				var dataPhoneNumber = {
+					Name: 'phone_number',
+					Value: user.phoneNumber,
+				};
+				var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+				var attributePhoneNumber = new AmazonCognitoIdentity.CognitoUserAttribute(
+					dataPhoneNumber
+				);
+
+				attributeList.push(attributeEmail);
+				attributeList.push(attributePhoneNumber);
+
+				userPool.signUp(user.emailAddress, user.password, attributeList, null, function(err,result) {
+					if (err) {
+						alert(err.message || JSON.stringify(err));
+						return;
+					}
+					var cognitoUser = result.user;
+					console.log('user name is ' + cognitoUser.getUsername());
+				});
+			}
+			var form = document.querySelector('#js-form-create-account');	
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+				var user = {
+					emailAddress: form.elements['email_address'].value,
+					phoneNumber: form.elements['phone_number'].value,
+					password: form.elements['password'].value
+				};
+				registerUser(user);
+			});
+		</script>
 	</body>
 </html>

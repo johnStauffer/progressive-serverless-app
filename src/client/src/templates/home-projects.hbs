@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	{{> global-head}}
+	<body id="home-projects">
+		<main id="js-partial-projects" class="container container-small">
+			{{!-- js generated --}}
+		</main>
+		<script src="/js/atomic.polyfills.min.js"></script>
+		<script>
+			var numberOfProjects = 1;
+			if( numberOfProjects > 0 ) {
+				atomic('http://localhost:3000/home-partial-some-projects.html')
+				.then(function (response) {
+					// console.log(response);
+					// console.log(response.data); // xhr.responseText
+					// console.log(response.xhr);  // full response
+					var dynamicContentArea = document.querySelector('#js-partial-projects');
+					if( dynamicContentArea ) {
+						dynamicContentArea.innerHTML = response.data;
+					}
+				})
+				.catch(function (error) {
+					console.error(error);
+					// console.log(error.status); // xhr.status
+					// console.log(error.statusText); // xhr.statusText
+				});
+			} else {
+				atomic('http://localhost:3000/home-partial-no-projects.html')
+				.then(function (response) {
+					// console.log(response);
+					// console.log(response.data); // xhr.responseText
+					// console.log(response.xhr);  // full response
+					var dynamicContentArea = document.querySelector('#js-partial-projects');
+					if( dynamicContentArea ) {
+						dynamicContentArea.innerHTML = response.data;
+					}
+				})
+				.catch(function (error) {
+					console.error(error);
+					// console.log(error.status); // xhr.status
+					// console.log(error.statusText); // xhr.statusText
+				});
+			}
+		</script>
+	</body>
+</html>
+
+
