@@ -5,5 +5,8 @@ jspm_packages
 # Serverless directories
 .serverless
 
-#vscode
+# vscode
 *.code-workspace
+
+# env secrets
+.env

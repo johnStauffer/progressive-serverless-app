@@ -4,8 +4,10 @@
   "description": "",
   "main": "handler.js",
   "dependencies": {
-    "uuid": "^3.3.3",
-    "aws-sdk": "^2.552.0"
+    "aws-sdk": "^2.552.0",
+    "serverless-bundle": "^1.2.5",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "serverless-offline": "^5.12.0"
