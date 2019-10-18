@@ -64,8 +64,8 @@
 		<script type="text/javascript">
 			function registerUser(user) {
 				var poolData = {
-					UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
-					ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
+					UserPoolId: 'us-east-1_MtlgYMnLG', // Your user pool id here
+					ClientId: '7koj2f36b7ouj4a3kvn5n71qb8' // Your client id here
 				};
 				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
@@ -95,6 +95,7 @@
 					}
 					var cognitoUser = result.user;
 					console.log('user name is ' + cognitoUser.getUsername());
+					window.location.href = '/account-confirmation.html';
 				});
 			}
 			var form = document.querySelector('#js-form-create-account');	

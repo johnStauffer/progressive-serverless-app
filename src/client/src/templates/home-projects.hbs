@@ -2,16 +2,14 @@
 <html>
 	{{> global-head}}
 	<body id="home-projects">
-		<header>
-			<button id="js-logout" class="btn">Logout</button>
-		</header>
+		{{> header}}
 		<main id="js-partial-projects" class="container container-small">
 			{{!-- js generated --}}
 		</main>
 		<script src="/js/atomic.polyfills.min.js"></script>
-		<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
+		{{> global-scripts}}
 		<script>
-			var numberOfProjects = 1;
+			var numberOfProjects = 0;
 			if( numberOfProjects > 0 ) {
 				atomic('http://localhost:3000/home-partial-some-projects.html')
 				.then(function (response) {
@@ -45,27 +43,6 @@
 					// console.log(error.statusText); // xhr.statusText
 				});
 			}
-
-			function logout() {
-				var poolData = {
-					UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
-					ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
-				};
-				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-				// get current user based on local storage
-				var cognitoUser = userPool.getCurrentUser();
-				if( cognitoUser != null ) {
-					cognitoUser.signOut();
-					window.location.href = "/";
-				}
-			}
-			var btnLogout = document.querySelector('#js-logout');
-			btnLogout.addEventListener('click', function(e) {
-				e.preventDefault();
-				logout();
-			});
 		</script>
 	</body>
 </html>
-
-

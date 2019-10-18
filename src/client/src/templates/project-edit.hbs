@@ -2,9 +2,7 @@
 <html>
 {{> global-head}}
 <body>
-	<header class="container container-small">
-		<h1>My Home</h1>
-	</header>
+	{{> header}}
 	<main id="main" class="container container-small">
 		<h2>Edit Project</h2>
 		<form id="js-form-project-edit" action="" method="POST" class="">
@@ -59,6 +57,7 @@
 
 	</footer>
 	<script src="/js/atomic.polyfills.min.js"></script>
+	{{> global-scripts}}
 	<script type="text/javascript">
 
 		var form = document.querySelector('#js-form-project-edit');

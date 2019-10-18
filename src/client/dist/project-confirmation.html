@@ -13,10 +13,35 @@
 	<!-- PWA -->
 	<link rel="manifest" href="/manifest.json" />
 </head><body>
-	<header class="container container-small">
-		<h1>My Home</h1>
-	</header>
-	<main id="main" class="container container-small">
+	<div id="js-global-nav" class="global-nav-wrapper">
+		<nav class="global-nav">
+			<ul class="global-nav-items">
+				<li>
+					<a href="/account-profile.html" class="">My Account</a>
+				</li>
+				<li>
+					<a href="/" class="">Inbox</a>
+				</li>
+				<li>
+					<a href="/home-projects.html" class="">My Projects</a>
+				</li>
+				<li>
+					<a href="/" class="">Saved Workers</a>
+				</li>
+				<li>
+					<a href="/" class="">Payments</a>
+				</li>
+				<li>
+					<button id="js-logout" class="btn">Logout</button>
+				</li>
+			</ul>
+		</nav>
+	</div><header class="container container-small">
+		<div class="row row-between">
+			<h1>My Home</h1>
+			<button id="js-menu" class="btn">Menu</button>
+		</div>
+	</header>	<main id="main" class="container container-small">
 		<h2>Project Confirmation</h2>
 		<div class="project-confirmation">
 			<h3>Congratulations We Have Recieved Your Request</h3>
@@ -30,10 +55,9 @@
 
 	</footer>
 	<script src="/js/atomic.polyfills.min.js"></script>
-	<script type="text/javascript">
-
-
-
+	<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
+	<script type="text/javascript" src="/js/navigation.min.js"></script>
+	<script type="text/javascript" src="/js/logout.min.js"></script>	<script type="text/javascript">
 
 		var form = document.querySelector('#js-form-project-create');
 		var fileInput = document.getElementById('project-pictures');

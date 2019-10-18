@@ -47,8 +47,8 @@
 	<script>
 		function shouldSkipLogin() {
 			var poolData = {
-				UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
-				ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa' // Your client id here
+				UserPoolId: 'us-east-1_MtlgYMnLG', // Your user pool id here
+				ClientId: '7koj2f36b7ouj4a3kvn5n71qb8' // Your client id here
 			};
 			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 			// get current user based on local storage
@@ -75,8 +75,8 @@
 				authenticationData
 			);
 			var poolData = {
-				UserPoolId: 'us-east-1_I2J13P1aB', // Your user pool id here
-				ClientId: '49ce2mo2f2dk13oc0e4a0dmtsa', // Your client id here
+				UserPoolId: 'us-east-1_MtlgYMnLG', // Your user pool id here
+				ClientId: '7koj2f36b7ouj4a3kvn5n71qb8', // Your client id here
 			};
 			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 			var userData = {
@@ -102,7 +102,7 @@
 						IdentityPoolId: 'us-east-1:1ac3c508-caae-40b3-946e-d04d1ba83aea', // your identity pool id here
 						Logins: {
 							// Change the key below according to the specific region your user pool is in.
-							'cognito-idp.us-east-1.amazonaws.com/us-east-1_I2J13P1aB': result
+							'cognito-idp.us-east-1.amazonaws.com/us-east-1_MtlgYMnLG': result
 								.getIdToken()
 								.getJwtToken(),
 						},
@@ -131,10 +131,8 @@
 			window.location.href = '/home-projects.html';
 		} else {
 			var form = document.querySelector('#js-form-login');
-			console.log(form);
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
-				console.log('here');
 				var user = {
 					emailAddress: form.elements['email_address'].value,
 					password: form.elements['password'].value
