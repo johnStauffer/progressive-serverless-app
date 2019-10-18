@@ -3,86 +3,74 @@ app: serverless-progressive-app
 
 service: progressive-serverless-app
 
-# where service will be deployed
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or fallsback to what we have set in the provider section.
+  currentStage: ${opt:stage, self:provider.stage}
+  # Set the table name here so we can use it while testing locally
+  usersTableName: users-${self:custom.currentStage}
+
 provider:
   name: aws
   runtime: nodejs10.x
+  stage: dev
   region: us-east-1
-  stage: ${self:custom.currentStage}
 
-custom:
-  defaultStage: dev
-  currentStage: ${opt:stage, self:custom.defaultStage}
-  userPoolName: pwa-user-pool-${self:custom.currentStage}
-  userPoolClientName: pwa-user-pool-client-${self:custom.currentStage}
+  # These environment variables are made available to our functions
+  # under process.env.
+  environment:
+    usersTableName: ${self:custom.usersTableName}
+
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:DescribeTable
+  #       - dynamodb:Query
+  #       - dynamodb:Scan
+  #       - dynamodb:GetItem
+  #       - dynamodb:PutItem
+  #       - dynamodb:UpdateItem
+  #       - dynamodb:DeleteItem
+  #     # Restrict our IAM role permissions to
+  #     # the specific table for the
+  #     Resource:
+  #       - "Fn::GetAtt": [UsersTable, Arn]
 
 functions:
-  registeredOnly:
-    handler: lambdas/cognitotest.hiUsers
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /users/create
+  # - method: POST request
+  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
+  #     domain api call
+  # - authorizer: authenticate using the AWS IAM role
+
+  storeUser:
+    handler: lambdas/storeUser.handler
     events:
       - http:
-          path: /hiUsers
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          cors:
-            origin: "http://localhost:3000"
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
+          path: /users/create
+          method: post
+          cors: true
   guests:
-    handler: lambdas/cognitotest.hiGuests
+    handler: lambdas/helloworld.handler
     events:
       - http:
-          path: /hiAll
+          path: /helloworld
           method: get
-resources:
-  Resources:
-    CognitoUserPool:
-      Type: "AWS::Cognito::UserPool"
-      Properties:
-        MfaConfiguration: OFF
-        UserPoolName: ${self:custom.userPoolName}
-        UsernameAttributes:
-          - email
-        Policies:
-          PasswordPolicy:
-            MinimumLength: 6
-            RequireLowercase: False
-            RequireNumbers: True
-            RequireSymbols: False
-            RequireUppercase: True
-    CognitoUserPoolClient:
-      Type: "AWS::Cognito::UserPoolClient"
-      Properties:
-        ClientName: ${self:custom.userPoolClientName}
-        GenerateSecret: False
-        UserPoolId:
-          Ref: CognitoUserPool
-    ApiGatewayAuthorizer:
-      DependsOn:
-        - ApiGatewayRestApi
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        Name: cognito-authorizer
-        IdentitySource: method.request.header.Authorization
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        Type: COGNITO_USER_POOLS
-        ProviderARNs:
-          - Fn::GetAtt: [CognitoUserPool, Arn]
-  Outputs:
-    CognitoUserPoolArn:
-      Value:
-        Fn::GetAtt:
-          - CognitoUserPool
-          - Arn
-      Export:
-        Name: CognitoUserPoolArn-${self:custom.currentStage}
+
+# resources:
+  # - ${file(resources/api-gateway-authorizer.yml)}
+  # DynamoDB
+  # - ${file(resources/dynamodb-users.yml)}
+  # Cognito
+  # - ${file(resources/cognito-user-pool.yml)}
+  # - ${file(resources/cognito-identity-pool.yml)}

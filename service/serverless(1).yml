@@ -1,0 +1,134 @@
+org: johnstauffer
+app: serverless-progressive-app
+
+service: progressive-serverless-app
+
+# where service will be deployed
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-1
+  stage: ${self:custom.currentStage}
+
+package:
+  individually: true
+  excludeDevDependencies: true
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  userPoolName: pwa-user-pool-${self:custom.currentStage}
+  userPoolClientName: pwa-user-pool-client-${self:custom.currentStage}
+  userIdentityPoolName: pwa-user-identity-pool-${self:custom.currentStage}
+
+functions:
+  storeUserFn:
+    handler: lambdas/cognitotest.storeUser
+    events:
+      - http:
+          path: /users/create
+          method: post
+          cors: true
+  registeredOnly:
+    handler: lambdas/cognitotest.hiUsers
+    events:
+      - http:
+          path: /hiUsers
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+          cors:
+            origin: "http://localhost:3000"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+  guests:
+    handler: lambdas/cognitotest.hiGuests
+    events:
+      - http:
+          path: /hiAll
+          method: get
+
+# Create esources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-authorizer.yml)}
+  # DynamoDB
+  - ${file(resources/dynamodb-users.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
+
+  # Resources:
+  # CognitoUserPool:
+  #   Type: "AWS::Cognito::UserPool"
+  #   Properties:
+  #     MfaConfiguration: OFF
+  #     UserPoolName: ${self:custom.userPoolName}
+  #     UsernameAttributes:
+  #       - email
+  #     AutoVerifiedAttributes:
+  #       - email
+  #     Policies:
+  #       PasswordPolicy:
+  #         MinimumLength: 6
+  #         RequireLowercase: False
+  #         RequireNumbers: True
+  #         RequireSymbols: False
+  #         RequireUppercase: True
+  # CognitoUserPoolClient:
+  #   Type: "AWS::Cognito::UserPoolClient"
+  #   Properties:
+  #     ClientName: ${self:custom.userPoolClientName}
+  #     GenerateSecret: False
+  #     UserPoolId:
+  #       Ref: CognitoUserPool
+  # CognitoIdentityPool:
+  #   Type: AWS::Cognito::IdentityPool
+  #   Properties:
+  #     IdentityPoolName: ${self:custom.userIdentityPooName}
+  #     AllowUnauthenticatedIdentities: false
+  #     CognitoIdentityProviders:
+  #       - ClientId:
+  #           Ref: CognitoUserPoolClient
+  #         ProviderName:
+  #           Fn::GetAtt: [CognitoUserPool, ProviderName]
+  # ApiGatewayAuthorizer:
+  #   DependsOn:
+  #     - ApiGatewayRestApi
+  #   Type: AWS::ApiGateway::Authorizer
+  #   Properties:
+  #     Name: cognito-authorizer
+  #     IdentitySource: method.request.header.Authorization
+  #     RestApiId:
+  #       Ref: ApiGatewayRestApi
+  #     Type: COGNITO_USER_POOLS
+  #     ProviderARNs:
+  #       - Fn::GetAtt: [CognitoUserPool, Arn]
+  # usersTable:
+  #   Type: AWS::DynamoDB::Table
+  #   Properties:
+  #     TableName: userTable_${self:custom.currentStage}
+  #     AttributeDefinitions:
+  #       - AttributeName: userId
+  #         AttributeType: S
+  #     KeySchema:
+  #       - AttributeName: userId
+  #         KeyType: HASH
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 1
+  #       WriteCapacityUnits: 1
+  # Outputs:
+  #   CognitoUserPoolArn:
+  #     Value:
+  #       Fn::GetAtt:
+  #         - CognitoUserPool
+  #         - Arn
+  #     Export:
+  #       Name: CognitoUserPoolArn-${self:custom.currentStage}
