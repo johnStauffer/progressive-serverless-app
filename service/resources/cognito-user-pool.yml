@@ -1,42 +1,28 @@
 Resources:
   CognitoUserPool:
-      Type: "AWS::Cognito::UserPool"
-      Properties:
-        MfaConfiguration: OFF
-        UserPoolName: ${self:custom.userPoolName}
-        UsernameAttributes:
-          - email
-        Policies:
-          PasswordPolicy:
-            MinimumLength: 6
-            RequireLowercase: False
-            RequireNumbers: True
-            RequireSymbols: False
-            RequireUppercase: True
-  CognitoUserPoolClient:
-    Type: "AWS::Cognito::UserPoolClient"
+    Type: AWS::Cognito::UserPool
     Properties:
-      ClientName: ${self:custom.userPoolClientName}
-      GenerateSecret: False
+      # Generate a name based on the stage
+      UserPoolName: pwa-user-pool-${self:custom.currentStage}
+      # Set email as an alias
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      # Generate an app client name based on the stage
+      ClientName: pwa-user-pool-client-${self:custom.currentStage}
       UserPoolId:
         Ref: CognitoUserPool
-  ApiGatewayAuthorizer:
-    DependsOn:
-      - ApiGatewayRestApi
-    Type: AWS::ApiGateway::Authorizer
-    Properties:
-      Name: cognito-authorizer
-      IdentitySource: method.request.header.Authorization
-      RestApiId:
-        Ref: ApiGatewayRestApi
-      Type: COGNITO_USER_POOLS
-      ProviderARNs:
-        - Fn::GetAtt: [CognitoUserPool, Arn]
+      GenerateSecret: false
+# Print out the Id of the User Pool that is created
 Outputs:
-  CognitoUserPoolArn:
+  UserPoolId:
     Value:
-      Fn::GetAtt:
-        - CognitoUserPool
-        - Arn
-    Export:
-      Name: CognitoUserPoolArn-${self:custom.currentStage
+      Ref: CognitoUserPool
+
+  UserPoolClientId:
+    Value:
+      Ref: CognitoUserPoolClient
