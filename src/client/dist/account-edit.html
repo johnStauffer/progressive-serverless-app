@@ -100,7 +100,7 @@
 						alert(err.message || JSON.stringify(err));
 						return;
 					}
-					console.log('TOKEN', session.getIdToken().getJwtToken());
+					// console.log('TOKEN', session.getIdToken().getJwtToken());
 					/* post user to Dynamo Db */
 					atomic('https://2yll05l1ek.execute-api.us-east-1.amazonaws.com/development/users/create', {
 						method: 'POST',
@@ -108,9 +108,7 @@
 							'Authorization': session.getIdToken().getJwtToken(),
 							'Content-type': 'application/json'
 						},
-						// withCredentials: true,
 						data: {
-							userId: '999',
 							firstName: user.firstName,
 							lastName: user.lastName,
 							streetAddress: user.streetAddress,
