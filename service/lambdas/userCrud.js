@@ -5,17 +5,17 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 module.exports.createUser = (event, context, callback) => {
     const registrationJson = JSON.parse(event.body);
     const claims = event.requestContext.authorizer.claims;
-    const username = claims['cognito:username'];
+    const userId = claims['cognito:username'];
 
     console.log("event", event);
     console.log("context", context);
-    console.log("username: ", username);
+    console.log("username: ", userId);
     console.log("claims", claims)
 
     const params = {
         Item: {
             "userId": {
-                S: registrationJson.userId
+                S: userId
             },
             "firstName": {
                 S: registrationJson.firstName
