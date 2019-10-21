@@ -37,7 +37,7 @@ module.exports.createUser = (event, context, callback) => {
             }
         },
         // TODO get this from environment variable
-        TableName: "users-dev2"
+        TableName: "users-dev1"
     };
 
     console.log(params);
@@ -72,13 +72,7 @@ module.exports.getUser = (event, context, callback) => {
         Key: {
             "userId": username
         },
-        // Key: {
-        //     "userId": {
-        //         S: username
-        //     }
-        // },
-        // userId
-        TableName: "users-dev2"
+        TableName: "users-dev1"
     };
     documentClient.get(params, function(err, data) {
         if (err) {

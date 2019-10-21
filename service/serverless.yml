@@ -40,32 +40,6 @@ environment:
   PROJECTS_TABLE_NAME: ${self:custom.projectsTableName}
 
 functions:
-  registeredOnly:
-    handler: lambdas/cognitotest.hiUsers
-    events:
-      - http:
-          path: /hiUsers
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          cors:
-            origin: "http://localhost:3000"
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
-  guests:
-    handler: lambdas/cognitotest.hiGuests
-    events:
-      - http:
-          path: /hiAll
-          method: get
   users:
     handler: lambdas/userCrud.createUser
     events:
@@ -112,7 +86,60 @@ functions:
       - http:
           path: /workers/
           method: get
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  createProject:
+    handler: lambdas/projects.createProject
+    events:
+      - http:
+          path: /projects/create
+          method: post
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  getProjects:
+    handler: lambdas/projects.getProjects
+    events:
+      - http:
+          path: /projects
+          method: post
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 resources:
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/api-gateway-authorizer.yml)}
