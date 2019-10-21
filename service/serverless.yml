@@ -81,6 +81,26 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+    getUsers:
+      handler: lambdas/userCrud.getUser
+      events:
+        - http:
+            path: /users/create
+            method: get
+            cors:
+              origin: "*"
+              headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+              allowCredentials: true
+            authorizer:
+              type: COGNITO_USER_POOLS
+              authorizerId:
+                Ref: ApiGatewayAuthorizer
 resources:
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/api-gateway-authorizer.yml)}
