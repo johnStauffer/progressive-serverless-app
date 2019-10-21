@@ -154,8 +154,13 @@
 				projectContactTime: form.elements['project_contact_time'].value,
 				projectDescription: form.elements['project_description'].value,
 			};
-			console.log(projectDetails);
-			createProject(projectDetails);
+			// determine how to handle creation of project based on network
+			if( navigator.onLine ) {
+        createProject(projectDetails);
+			} else {
+        saveData(projectDetails);
+			}
+			
 			/*
 			fileList.forEach(function(file) {
 				sendFile(file);
@@ -201,6 +206,34 @@
 				});
 		};
 		*/
+
+		/* handle creation of project when offline by saving to indexDB */
+
+		function saveData(project) {
+			return new Promise(function(resolve, reject) {
+				var projectDetails = {
+					projectType: project.projectType,
+					projectContactDay: project.projectContactDay,
+					projectContactTime: project.projectContactTime,
+					projectDescription: project.projectDescription
+				};
+			
+				var nonAwsProjectsObjStore = window.indexedDB.open('non_aws_projects');
+
+				nonAwsProjectsObjStore.onsuccess = function(event) {
+					var objStore = this.result
+						.transaction('nonAwsProjectsObjStore', 'readwrite')
+						.objectStore('nonAwsProjectsObjStore');
+					objStore.add(projectDetails);
+					resolve();
+				}
+
+				nonAwsProjectsObjStore.onerror = function(err) {
+					reject(err);
+				}
+		});
+	}
+
 	</script>
 </body>
 

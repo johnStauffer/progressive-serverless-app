@@ -1,4 +1,4 @@
-var version = 'v4';
+var version = 'v1';
 var staticCacheName = 'myHomeCache' + version;
 var mustHaveCacheFiles = [
 	'/favicon.ico',
@@ -11,8 +11,10 @@ var mustHaveCacheFiles = [
 	'/js/logout.min.js',
 	'/offline.html',
 	'/home-projects.html',
+	'/home-projects-offline.html',
 	'/project-create.html',
-	'/workers-project.html'
+	'/workers-project.html',
+	'/workers-project-offline.html'
 ];
 // var mustHaveCacheFiles = ['/', '/stylesheetv0-0-1.css', '/javascriptv0-0-1.js', '/font.woff', '/offline.html'];
 // var niceToHaveCacheFiles = ['icon.svg']; // removed 'image.jpg' from array (add back if to see difference) as want to cache asset in images cache - logic currently checks staticCacheName then imageCache for asset before caching in imageCache
@@ -137,26 +139,40 @@ self.addEventListener('fetch', fetchEvent => {
 	// console.log('requestURL',requestURL);
 	// use headers to write specific logic for different file types
 	if( request.headers.get('Accept').includes('text/html') ) {
-		// when / (root home page) requested - go to network then check the cache oterwise fallback (will be in staticCacheName from the start)
-		// console.log('requestURL',requestURL);
-		if( requestURL.pathname === '/' ) {
-			// console.log('HERE IN HOME PAGE');
+		// console.log('requestURL', requestURL);
+		if( requestURL.pathname === '/home-projects.html' ) {
 			fetchEvent.respondWith(
 				// fetch page from network
 				fetch(request)
 					.then( responseFromFetch => {
-						// console.log('responseFromFetch', responseFromFetch);
-						// check if resource exists and if so copy to cache
-						// if( responseFromFetch.status === 200 ) {
-						// 	// put a copy in the cache
-						// 	var copy = responseFromFetch.clone();
-						// 	fetchEvent.waitUntil(
-						// 		caches.open(staticCacheName)
-						// 			.then( staticCacheName => {
-						// 				return staticCacheName.put(request, copy);
-						// 			})
-						// 	);
-						// }
+						// return original request unmodified
+						return responseFromFetch;
+					})
+					.catch( error => {
+						console.log('NOT ON THE NETWORK - home page', error);
+						// return alternate offline version
+						return caches.match('/home-projects-offline.html');
+					})
+			);
+		} else if( requestURL.pathname === '/workers-project.html' ) {
+			fetchEvent.respondWith(
+				// fetch page from network
+				fetch(request)
+					.then( responseFromFetch => {
+						// return original request unmodified
+						return responseFromFetch;
+					})
+					.catch( error => {
+						console.log('NOT ON THE NETWORK - home page', error);
+						// return alternate offline version
+						return caches.match('/workers-project-offline.html');
+					})
+			);
+		} else {
+			fetchEvent.respondWith(
+				// fetch page from network
+				fetch(request)
+					.then( responseFromFetch => {
 						// return original request unmodified
 						return responseFromFetch;
 					})
@@ -173,7 +189,6 @@ self.addEventListener('fetch', fetchEvent => {
 							})
 					})
 			);
-			return; // go no further
 		}
 
 		/*
@@ -279,54 +294,54 @@ self.addEventListener('fetch', fetchEvent => {
 		*/
 	} else {
 		
-		fetchEvent.respondWith(
-			// fetch page from network
-			fetch(request)
-				.then( responseFromFetch => {
-					// console.log('responseFromFetch', responseFromFetch);
-					// check if resource exists and if so copy to cache
-					// if( responseFromFetch.status === 200 ) {
-					// 	// put a copy in the cache
-					// 	var copy = responseFromFetch.clone();
-					// 	fetchEvent.waitUntil(
-					// 		caches.open(staticCacheName)
-					// 			.then( staticCacheName => {
-					// 				return staticCacheName.put(request, copy);
-					// 			})
-					// 	);
-					// }
-					// return original request unmodified
-					return responseFromFetch;
-				})
-				.catch( error => {
-					console.log('NOT ON THE NETWORK - home page', error);
-					// check cache to see if available
-					return caches.match(request)
-						.then( responseFromCache  => {
-							if( responseFromCache ) {
-								return responseFromCache;
-							}
-							// otherwise show the fallback page
-							return caches.match('/offline.html');
-						})
-				})
-		);
-
+	// 	fetchEvent.respondWith(
+	// 		// fetch page from network
+	// 		fetch(request)
+	// 			.then( responseFromFetch => {
+	// 				// console.log('responseFromFetch', responseFromFetch);
+	// 				// check if resource exists and if so copy to cache
+	// 				// if( responseFromFetch.status === 200 ) {
+	// 				// 	// put a copy in the cache
+	// 				// 	var copy = responseFromFetch.clone();
+	// 				// 	fetchEvent.waitUntil(
+	// 				// 		caches.open(staticCacheName)
+	// 				// 			.then( staticCacheName => {
+	// 				// 				return staticCacheName.put(request, copy);
+	// 				// 			})
+	// 				// 	);
+	// 				// }
+	// 				// return original request unmodified
+	// 				return responseFromFetch;
+	// 			})
+	// 			.catch( error => {
+	// 				console.log('NOT ON THE NETWORK - home page', error);
+	// 				// check cache to see if available
+	// 				return caches.match(request)
+	// 					.then( responseFromCache  => {
+	// 						if( responseFromCache ) {
+	// 							return responseFromCache;
+	// 						}
+	// 						// otherwise show the fallback page
+	// 						return caches.match('/offline.html');
+	// 					})
+	// 			})
+	// 	);
 
 		// EVERYTHING ELSE
-		// fetchEvent.respondWith(
-		// 	// first look in the cache - can open the cache first but this is a more concise and quicker way
-		// 	caches.match(request)
-		// 		// if caches.match doesn't find file then doesn't reject (returns null) so no catch clause needed
-		// 		.then( responseFromCache => {
-		// 			if( responseFromCache ) {
-		// 				return responseFromCache;
-		// 			}
-		// 			// go to network if file not in cache 
-		// 			return fetch(request);
-		// 		})
-		// );
-	}
+			fetchEvent.respondWith(
+				// first look in the cache - can open the cache first but this is a more concise and quicker way
+				caches.match(request)
+					// if caches.match doesn't find file then doesn't reject (returns null) so no catch clause needed
+					.then( responseFromCache => {
+						if( responseFromCache ) {
+							return responseFromCache;
+						}
+						// go to network if file not in cache 
+						return fetch(request);
+					})
+			);
+			
+		}
 
 	/* SPECIFIC IMAGE CACHING LOGIC - try cache first, otherwise go to network and keep a copy */
 	/*
@@ -381,7 +396,6 @@ self.addEventListener('fetch', fetchEvent => {
 	// 		})
 	// );
 
-	
 });
 /*
 self.addEventListener('sync', function(event) {
