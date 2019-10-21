@@ -11,27 +11,33 @@ provider:
   stage: ${self:custom.currentStage}
 
   iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - dynamodb:DescribeTable
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource:
-      - "Fn::GetAtt": [ UsersTable, Arn ]
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+        # - "Fn::GetAtt": [UsersTable, Arn]
+        # - "Fn::GetAtt": [WorkersTable, Arn]
+        # - "Fn::GetAtt": [ProjectsTable, Arn]
 
 custom:
-  defaultStage: development
+  defaultStage: dev1
   currentStage: ${opt:stage, self:custom.defaultStage}
   userPoolName: pwa-user-pool-${self:custom.currentStage}
   userPoolClientName: pwa-user-pool-client-${self:custom.currentStage}
   usersTableName: users-${self:custom.currentStage}
+  workersTableName: workers-${self:custom.currentStage}
+  projectsTableName: projects-${self:custom.currentStage}
 
 environment:
   USER_TABLE_NAME: ${self:custom.usersTableName}
+  WORKERS_TABLE_NAME: ${self:custom.workersTableName}
+  PROJECTS_TABLE_NAME: ${self:custom.projectsTableName}
 
 functions:
   registeredOnly:
@@ -100,11 +106,17 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-
+  getWorkers:
+    handler: lambdas/workers.getWorkersForTask
+    events:
+      - http:
+          path: /workers/
+          method: get
+          cors: true
 resources:
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/api-gateway-authorizer.yml)}
   - ${file(resources/dynamodb-users.yml)}
+  - ${file(resources/dynamodb-workers.yml)}
+  - ${file(resources/dynamodb-projects.yml)}
   - ${file(resources/api-gateway-errors.yml)}
-
-
