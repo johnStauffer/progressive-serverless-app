@@ -5,7 +5,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 module.exports.getWorkersForTask = (event, context, callback) => {
     const eventBodyJson = JSON.parse(event.body);
     const params = {
-        TableName: "workers-dev2"
+        TableName: "workers-dev1"
     };
     documentClient.scan(params, function(err, data) {
         if (err) {

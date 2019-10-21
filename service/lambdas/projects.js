@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const uuid = require('uuid/v4');
 
 const dynamodb = new AWS.DynamoDB({ region: 'us-east-1', apiVersion: '2012-08-10' });
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -12,19 +11,22 @@ module.exports.createProject = (event, context, callback) => {
     const params = {
         Item: {
             "projectId": {
-                N: uuid()
+                S: (Math.floor(Math.random() * Math.floor(10000))) + ""
             },
             "userId": {
                 S: userId
             },
             "projectType": {
-                S: projectJson.lastName
+                S: projectJson.projectType
             },
             "projectContactTime": {
-                S: projectJson.streetAddress
+                S: projectJson.projectContactTime
+            },
+            "projectContactDay": {
+                S: projectJson.projectContactDay
             },
             "projectDescription": {
-                S: projectJson.city
+                S: projectJson.projectDescription
             }
         },
         // TODO get this from environment variable
