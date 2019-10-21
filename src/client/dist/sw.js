@@ -11,8 +11,6 @@ var mustHaveCacheFiles = [
 	'/js/logout.min.js',
 	'/offline.html',
 	'/home-projects.html',
-	'/home-partial-some-projects.html',
-	'/home-partial-no-projects.html',
 	'/project-create.html',
 	'/workers-project.html'
 ];
