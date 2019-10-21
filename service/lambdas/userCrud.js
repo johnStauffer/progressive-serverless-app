@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB({ region: 'us-east-1', apiVersion: '2012-08-10' });
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 module.exports.createUser = (event, context, callback) => {
     const registrationJson = JSON.parse(event.body);
@@ -68,10 +69,18 @@ module.exports.getUser = (event, context, callback) => {
     const claims = event.requestContext.authorizer.claims;
     const username = claims['cognito:username'];
     const params = {
+        Key: {
+            "userId": username
+        },
+        // Key: {
+        //     "userId": {
+        //         S: username
+        //     }
+        // },
         // userId
         TableName: "users-development"
     };
-    dynamodb.getItem(params, function(err, data) {
+    documentClient.get(params, function(err, data) {
         if (err) {
             console.log('dynamodb error' + err);
             callback(err);

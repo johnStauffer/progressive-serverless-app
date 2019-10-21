@@ -141,24 +141,28 @@
 			});
 		}
 
-			// if( navigator.serviceWorker ) {
-			// 	navigator.serviceWorker.register('/serviceworker.js')
-			// 		.then( registration => {
-			// 			console.log('registration', registration);
-			// 			// register for a sync - triggers when online - client to server - If you register for a sync using the same tag as a pending sync, it will combine with the existing sync. Use unique tags for separate sync events
-			// 			return registration.sync.register('myFirstSync')
-			// 				.then( () => {
-			// 					console.log('myFirstSync set up');
-			// 				})
-			// 		})
-			// 		.catch( err => console.error('error', err) );
-			// 	if( navigator.serviceWorker.controller ) {
-			// 		// trigger a message event to communicate with service worker on page load
-			// 		window.addEventListener('load', () => {
-			// 			navigator.serviceWorker.controller.postMessage('postForm');
-			// 		});
-			// 	}
-			// }
+		if( navigator.serviceWorker ) {
+			navigator.serviceWorker.register('/sw.js')
+				.then( registration => {
+					console.log('registration', registration);
+					// register for a sync - triggers when online - client to server - If you register for a sync using the same tag as a pending sync, it will combine with the existing sync. Use unique tags for separate sync events
+					/*
+					return registration.sync.register('myFirstSync')
+						.then( () => {
+							console.log('myFirstSync set up');
+						})
+					*/
+				})
+				.catch( err => console.error('error', err) );
+			/*
+			if( navigator.serviceWorker.controller ) {
+				// trigger a message event to communicate with service worker on page load
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.controller.postMessage('postForm');
+				});
+			}
+			*/
+		}
 	</script>
 </body>
 

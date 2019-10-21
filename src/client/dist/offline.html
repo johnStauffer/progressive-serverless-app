@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="My Home: An application for homeowners" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<title>My Home</title>
+	<!-- Icons -->
+	<link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+	<!-- Stylesheet -->
+	<link rel="stylesheet" href="/css/main.min.css" type="text/css" />
+	<!-- PWA -->
+	<link rel="manifest" href="/manifest.json" />
+</head><body>
+	<header class="container container-small">
+		<h1>My Home</h1>
+	</header>
+	<h2>You are currently offline</h2>
+	<p>But don't fret you can still do the following things:</p>
+		<div id="table-of-contents">
+			<ul>
+				<li><a href="/account-profile.html">My Account</a></li>
+				<li><a href="/account-edit.html">Edit My Account</a></li>
+			</ul>
+		</div>
+		<script>
+			// open the cache of pages - predescribed pages
+			
+			// caches.open('pages')
+			// 	.then( pagesCache => {
+			// 		console.log('HERE IN PAGES');
+			// 		pagesCache.keys()
+			// 			.then( keys => {
+			// 				let markup = '';
+			// 				// loop through each item in the cache
+			// 				keys.forEach( request => {
+			// 					// make a link to the URL for page
+			// 					markup += `<li><a href="${request.url}">${request.url}</a></li>`;
+			// 				});
+			// 				// display the list of links
+			// 				document.getElementById('history').innerHTML = markup;
+			// 			});
+			// 	});
+			
+			/*
+			// user selected pages
+
+			let markup = '';
+			// open the cache of saved pages
+			caches.open('savedpages')
+				.then( savedpagesCache => {
+					savedpagesCache.keys()
+						.then( keys => {
+							// loop through each item in the cache
+							keys.forEach( request => {
+								// look up the corresponding metadata in local storage
+								const data = JSON.parse(localStorage.getItem(request.url));
+								// make a descriptive link to the URL of each page
+								if( data ) {
+									markup += `<h3><a href="${request.url}">${data.title}</a></h3>`;
+									markup += `<p>${data.description}</p>`;
+								}
+								
+							});
+							// display the list of links
+							document.getElementById('history').innerHTML = markup;
+						});
+				});
+			*/
+		</script>
+	</body>
+</html>

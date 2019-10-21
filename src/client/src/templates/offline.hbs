@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+{{> global-head}}
+<body>
+	<header class="container container-small">
+		<h1>My Home</h1>
+	</header>
+	<h2>You are currently offline</h2>
+	<p>But don't fret you can still do the following things:</p>
+		<div id="table-of-contents">
+			<ul>
+				<li><a href="/account-profile.html">My Account</a></li>
+				<li><a href="/account-edit.html">Edit My Account</a></li>
+			</ul>
+		</div>
+		{{!-- <div id="history"></div> --}}
+		<script>
+			// open the cache of pages - predescribed pages
+			
+			// caches.open('pages')
+			// 	.then( pagesCache => {
+			// 		console.log('HERE IN PAGES');
+			// 		pagesCache.keys()
+			// 			.then( keys => {
+			// 				let markup = '';
+			// 				// loop through each item in the cache
+			// 				keys.forEach( request => {
+			// 					// make a link to the URL for page
+			// 					markup += `<li><a href="${request.url}">${request.url}</a></li>`;
+			// 				});
+			// 				// display the list of links
+			// 				document.getElementById('history').innerHTML = markup;
+			// 			});
+			// 	});
+			
+			/*
+			// user selected pages
+
+			let markup = '';
+			// open the cache of saved pages
+			caches.open('savedpages')
+				.then( savedpagesCache => {
+					savedpagesCache.keys()
+						.then( keys => {
+							// loop through each item in the cache
+							keys.forEach( request => {
+								// look up the corresponding metadata in local storage
+								const data = JSON.parse(localStorage.getItem(request.url));
+								// make a descriptive link to the URL of each page
+								if( data ) {
+									markup += `<h3><a href="${request.url}">${data.title}</a></h3>`;
+									markup += `<p>${data.description}</p>`;
+								}
+								
+							});
+							// display the list of links
+							document.getElementById('history').innerHTML = markup;
+						});
+				});
+			*/
+		</script>
+	</body>
+</html>

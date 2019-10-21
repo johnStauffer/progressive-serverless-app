@@ -10,3 +10,12 @@
 @import "components/overrides";
 @import "components/print";
 @import "components/nav";
+
+
+.link-none {
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: none;
+	}
+}

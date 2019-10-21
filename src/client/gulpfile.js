@@ -11,6 +11,7 @@ var settings = {
 	svgs: false,
 	copy: true,
 	reload: true,
+	pwa: true,
 	baseDir: __dirname
 };
 
@@ -37,6 +38,10 @@ var paths = {
 	},
 	copy: {
 		input: 'src/templates/**/*',
+		output: 'dist/'
+	},
+	pwa: {
+		input: 'src/pwa/**/*',
 		output: 'dist/'
 	},
 	reload: settings.baseDir+'/dist'
@@ -240,6 +245,21 @@ var copyFiles = function (done) {
 
 };
 
+// Copy pwa files into output folder
+var copyPwa = function (done) {
+
+	// Make sure this feature is activated before running
+	if (!settings.pwa) return done();
+
+	// Copy pwa files
+	src(paths.pwa.input)
+		.pipe(dest(paths.pwa.output));
+
+	// Signal completion
+	done();
+
+};
+
 // Watch for changes to the src directory
 var startServer = function (done) {
 
@@ -285,7 +305,8 @@ exports.default = series(
 		lintScripts,
 		buildStyles,
 		buildSVGs,
-		copyFiles
+		copyFiles,
+		copyPwa
 	)
 );
 

@@ -1514,3 +1514,11 @@ td {
   text-transform: uppercase;
   color: #ffffff;
 }
+
+.link-none {
+  text-decoration: none;
+}
+
+.link-none:hover {
+  text-decoration: none;
+}
