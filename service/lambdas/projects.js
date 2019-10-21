@@ -16,6 +16,9 @@ module.exports.createProject = (event, context, callback) => {
             "userId": {
                 S: userId
             },
+            "userIdFilterField": {
+                S: userId
+            },
             "projectType": {
                 S: projectJson.projectType
             },
@@ -61,11 +64,14 @@ module.exports.getProjects = (event, context, callback) => {
     const eventBodyJson = JSON.parse(event.body);
     const claims = event.requestContext.authorizer.claims;
     const username = claims['cognito:username'];
+
     const params = {
         TableName: "projects-dev1",
-        FilterExpression: "userId = :userId",
+        FilterExpression: "userIdFilterField = :userId",
         ExpressionAttributeValues: { ":userId": { "S": username } }
     };
+
+    console.log("params", params)
 
     documentClient.scan(params, function (err, data) {
         if (err) {
