@@ -11,55 +11,35 @@ provider:
   stage: ${self:custom.currentStage}
 
   iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - dynamodb:DescribeTable
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource:
-      - "Fn::GetAtt": [ UsersTable, Arn ]
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+        # - "Fn::GetAtt": [UsersTable, Arn]
+        # - "Fn::GetAtt": [WorkersTable, Arn]
+        # - "Fn::GetAtt": [ProjectsTable, Arn]
 
 custom:
-  defaultStage: development
+  defaultStage: dev1
   currentStage: ${opt:stage, self:custom.defaultStage}
   userPoolName: pwa-user-pool-${self:custom.currentStage}
   userPoolClientName: pwa-user-pool-client-${self:custom.currentStage}
   usersTableName: users-${self:custom.currentStage}
+  workersTableName: workers-${self:custom.currentStage}
+  projectsTableName: projects-${self:custom.currentStage}
 
 environment:
   USER_TABLE_NAME: ${self:custom.usersTableName}
+  WORKERS_TABLE_NAME: ${self:custom.workersTableName}
+  PROJECTS_TABLE_NAME: ${self:custom.projectsTableName}
 
 functions:
-  registeredOnly:
-    handler: lambdas/cognitotest.hiUsers
-    events:
-      - http:
-          path: /hiUsers
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
-          cors:
-            origin: "http://localhost:3000"
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
-  guests:
-    handler: lambdas/cognitotest.hiGuests
-    events:
-      - http:
-          path: /hiAll
-          method: get
   users:
     handler: lambdas/userCrud.createUser
     events:
@@ -100,11 +80,70 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-
+  getWorkers:
+    handler: lambdas/workers.getWorkersForTask
+    events:
+      - http:
+          path: /workers/
+          method: get
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  createProject:
+    handler: lambdas/projects.createProject
+    events:
+      - http:
+          path: /projects/create
+          method: post
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  getProjects:
+    handler: lambdas/projects.getProjects
+    events:
+      - http:
+          path: /projects
+          method: get
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 resources:
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/api-gateway-authorizer.yml)}
   - ${file(resources/dynamodb-users.yml)}
+  - ${file(resources/dynamodb-workers.yml)}
+  - ${file(resources/dynamodb-projects.yml)}
   - ${file(resources/api-gateway-errors.yml)}
-
-

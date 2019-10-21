@@ -1,0 +1,18 @@
+Resources:
+  WorkersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.workersTableName}
+      AttributeDefinitions:
+        - AttributeName: workerId
+          AttributeType: S
+        - AttributeName: task
+          AttributeType: S
+      KeySchema:
+        - AttributeName: workerId
+          KeyType: HASH
+        - AttributeName: task
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1

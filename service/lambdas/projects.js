@@ -1,43 +1,39 @@
 const AWS = require('aws-sdk');
+
 const dynamodb = new AWS.DynamoDB({ region: 'us-east-1', apiVersion: '2012-08-10' });
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-module.exports.createUser = (event, context, callback) => {
-    const registrationJson = JSON.parse(event.body);
+module.exports.createProject = (event, context, callback) => {
+    const projectJson = JSON.parse(event.body);
     const claims = event.requestContext.authorizer.claims;
     const userId = claims['cognito:username'];
 
-    console.log("event", event);
-    console.log("context", context);
-    console.log("username: ", userId);
-    console.log("claims", claims)
-
     const params = {
         Item: {
+            "projectId": {
+                S: (Math.floor(Math.random() * Math.floor(10000))) + ""
+            },
             "userId": {
                 S: userId
             },
-            "firstName": {
-                S: registrationJson.firstName
+            "userIdFilterField": {
+                S: userId
             },
-            "lastName": {
-                S: registrationJson.lastName
+            "projectType": {
+                S: projectJson.projectType
             },
-            "streetAddress": {
-                S: registrationJson.streetAddress
+            "projectContactTime": {
+                S: projectJson.projectContactTime
             },
-            "city": {
-                S: registrationJson.city
+            "projectContactDay": {
+                S: projectJson.projectContactDay
             },
-            "state": {
-                S: registrationJson.state
-            },
-            "zip": {
-                S: registrationJson.zip
+            "projectDescription": {
+                S: projectJson.projectDescription
             }
         },
         // TODO get this from environment variable
-        TableName: "users-dev1"
+        TableName: "projects-dev1"
     };
 
     console.log(params);
@@ -64,17 +60,20 @@ module.exports.createUser = (event, context, callback) => {
 
 };
 
-module.exports.getUser = (event, context, callback) => {
+module.exports.getProjects = (event, context, callback) => {
     const eventBodyJson = JSON.parse(event.body);
     const claims = event.requestContext.authorizer.claims;
     const username = claims['cognito:username'];
+
     const params = {
-        Key: {
-            "userId": username
-        },
-        TableName: "users-dev1"
+        TableName: "projects-dev1",
+        FilterExpression: "userIdFilterField = :userId",
+        ExpressionAttributeValues: { ":userId": { "S": username } }
     };
-    documentClient.get(params, function(err, data) {
+
+    console.log("params", params)
+
+    documentClient.scan(params, function (err, data) {
         if (err) {
             console.log('dynamodb error' + err);
             callback(err);
