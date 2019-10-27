@@ -37,8 +37,8 @@
 	<script>
 		function shouldSkipLogin() {
 			var poolData = {
-				UserPoolId: 'us-east-1_8CV7DHfIl', // Your user pool id here
-				ClientId: '18dk7qmcdfcgnqeqg3gfdb76rk' // Your client id here
+				UserPoolId: 'us-east-1_fIIpe0d9e', // Your user pool id here
+				ClientId: '48d0a2d8dq14iivse1t20nrd7h' // Your client id here
 			};
 			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 			// get current user based on local storage
@@ -50,7 +50,7 @@
 						// alert(err.message || JSON.stringify(err));
 						return false;
 					}
-					console.log('session validity: ' + session.isValid());
+					// console.log('session validity: ' + session.isValid());
 					return true;
 				});
 			}
@@ -65,8 +65,8 @@
 				authenticationData
 			);
 			var poolData = {
-				UserPoolId: 'us-east-1_8CV7DHfIl', // Your user pool id here
-				ClientId: '18dk7qmcdfcgnqeqg3gfdb76rk', // Your client id here
+				UserPoolId: 'us-east-1_fIIpe0d9e', // Your user pool id here
+				ClientId: '48d0a2d8dq14iivse1t20nrd7h', // Your client id here
 			};
 			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 			var userData = {
@@ -79,8 +79,8 @@
 					var accessToken = result.getAccessToken().getJwtToken();
 					/* Use the idToken for Logins Map when Federating User Pools with identity pools or when passing through an Authorization Header to an API Gateway Authorizer */
 					var idToken = result.idToken.jwtToken;
-					console.log('accessToken', accessToken);
-					console.log('idToken', idToken);
+					// console.log('accessToken', accessToken);
+					// console.log('idToken', idToken);
 
 					window.location.href = '/home-projects.html';
 
@@ -92,7 +92,7 @@
 						IdentityPoolId: 'us-east-1:1ac3c508-caae-40b3-946e-d04d1ba83aea', // your identity pool id here
 						Logins: {
 							// Change the key below according to the specific region your user pool is in.
-							'cognito-idp.us-east-1.amazonaws.com/us-east-1_8CV7DHfIl': result
+							'cognito-idp.us-east-1.amazonaws.com/us-east-1_fIIpe0d9e': result
 								.getIdToken()
 								.getJwtToken(),
 						},
@@ -134,7 +134,8 @@
 		if( navigator.serviceWorker ) {
 			navigator.serviceWorker.register('/sw.js')
 				.then( registration => {
-					console.log('registration', registration);
+					console.log('sw registered');
+					// console.log('registration', registration);
 					// register for a sync - triggers when online - client to server - If you register for a sync using the same tag as a pending sync, it will combine with the existing sync. Use unique tags for separate sync events
 					/*
 					return registration.sync.register('myFirstSync')

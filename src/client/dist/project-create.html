@@ -82,11 +82,6 @@
 					resize></textarea>
 			</div>
 			<div class="input-wrapper">
-				<label for="project-pictures">Project Pictures</label>
-				<input id="project-pictures" type="file" name="project_pictures" class="input" multiple />
-			</div>
-			<div id='file-list-display'></div>
-			<div class="input-wrapper">
 				<input type="submit" value="Create Project" class="input" />
 			</div>
 		</form>
@@ -98,6 +93,51 @@
 	<script type="text/javascript" src="/js/amazon-cognito-identity.min.js"></script>
 	<script type="text/javascript" src="/js/navigation.min.js"></script>
 	<script type="text/javascript" src="/js/logout.min.js"></script>	<script type="text/javascript">
+
+		function createProject(project) {
+			/* get logged in user idToken */
+			var poolData = {
+				UserPoolId: 'us-east-1_fIIpe0d9e', // Your user pool id here
+				ClientId: '48d0a2d8dq14iivse1t20nrd7h' // Your client id here
+			};
+			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+			// get current user based on local storage
+			var cognitoUser = userPool.getCurrentUser();
+			// if no user then ask email
+			if (cognitoUser != null) {
+				cognitoUser.getSession(function (err, session) {
+					if (err) {
+						alert(err.message || JSON.stringify(err));
+						return;
+					}
+					/* post user to Dynamo Db */
+					atomic('https://3ou38g64pb.execute-api.us-east-1.amazonaws.com/dev1/projects/create', {
+						method: 'POST',
+						headers: {
+							'Authorization': session.getIdToken().getJwtToken(),
+							'Content-type': 'application/json'
+						},
+						data: {
+							projectType: project.projectType,
+							projectContactDay: project.projectContactDay,
+							projectContactTime: project.projectContactTime,
+							projectDescription: project.projectDescription,
+						}
+					})
+						.then(function (response) {
+							// console.log(response);
+							window.location.href = "/project-confirmation.html";
+							// console.log(response.data); // xhr.responseText
+							// console.log(response.xhr);  // full response
+						})
+						.catch(function (error) {
+							console.error(error);
+							// console.log(error.status); // xhr.status
+							// console.log(error.statusText); // xhr.statusText
+						});
+				});
+			}
+		}
 
 		var form = document.querySelector('#js-form-project-create');
 		var fileInput = document.getElementById('project-pictures');
@@ -113,14 +153,21 @@
 				projectContactDay: form.elements['project_contact_day'].value,
 				projectContactTime: form.elements['project_contact_time'].value,
 				projectDescription: form.elements['project_description'].value,
-				projectPictures: form.elements['project_pictures'].value
 			};
-			console.log(projectDetails);
+			// determine how to handle creation of project based on network
+			if( navigator.onLine ) {
+        createProject(projectDetails);
+			} else {
+        saveData(projectDetails);
+			}
+			
+			/*
 			fileList.forEach(function(file) {
 				sendFile(file);
 			});
+			*/
 		});
-
+		/*
 		fileInput.addEventListener('change', function (evnt) {
 			fileList = [];
 			for (var i = 0; i < fileInput.files.length; i++) {
@@ -128,7 +175,8 @@
 			}
 			renderFileList();
 		});
-
+		*/
+		/*
 		function renderFileList() {
 			fileListDisplay.innerHTML = '';
 			fileList.forEach(function (file, index) {
@@ -137,10 +185,10 @@
 				fileListDisplay.appendChild(fileDisplayEl);
 			});
 		};
-
+		*/
+		/*
 		function sendFile(file) {
 			console.log('send file', file);
-			/*
 			atomic('')
 				.then(function (response) {
 					// console.log(response);
@@ -156,8 +204,35 @@
 					// console.log(error.status); // xhr.status
 					// console.log(error.statusText); // xhr.statusText
 				});
-			*/
 		};
+		*/
+
+		/* handle creation of project when offline by saving to indexDB */
+
+		function saveData(project) {
+			return new Promise(function(resolve, reject) {
+				var projectDetails = {
+					projectType: project.projectType,
+					projectContactDay: project.projectContactDay,
+					projectContactTime: project.projectContactTime,
+					projectDescription: project.projectDescription
+				};
+			
+				var nonAwsProjectsObjStore = window.indexedDB.open('non_aws_projects');
+
+				nonAwsProjectsObjStore.onsuccess = function(event) {
+					var objStore = this.result
+						.transaction('nonAwsProjectsObjStore', 'readwrite')
+						.objectStore('nonAwsProjectsObjStore');
+					objStore.add(projectDetails);
+					resolve();
+				}
+
+				nonAwsProjectsObjStore.onerror = function(err) {
+					reject(err);
+				}
+		});
+	}
 
 	</script>
 </body>

@@ -16,6 +16,9 @@ module.exports.createProject = (event, context, callback) => {
             "userId": {
                 S: userId
             },
+            "createdAt" : {
+                N: new Date().getTime() + ""
+            },
             "userIdFilterField": {
                 S: userId
             },
@@ -67,8 +70,13 @@ module.exports.getProjects = (event, context, callback) => {
 
     const params = {
         TableName: "projects-dev1",
-        FilterExpression: "userIdFilterField = :userId",
-        ExpressionAttributeValues: { ":userId": { "S": username } }
+        ExpressionAttributeNames: {
+            "#userIdFilterField": "userIdFilterField"
+        },
+        ExpressionAttributeValues: {
+            ":userIdFilterField": username
+        },
+        FilterExpression: "#userIdFilterField = :userIdFilterField"
     };
 
     console.log("params", params)

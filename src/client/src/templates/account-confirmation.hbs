@@ -24,8 +24,8 @@
 		<script type="text/javascript">
 			function confirmUser(user, main) {
 				var poolData = {
-					UserPoolId: 'us-east-1_8CV7DHfIl', // Your user pool id here
-					ClientId: '18dk7qmcdfcgnqeqg3gfdb76rk' // Your client id here
+					UserPoolId: 'us-east-1_fIIpe0d9e', // Your user pool id here
+					ClientId: '48d0a2d8dq14iivse1t20nrd7h' // Your client id here
 				};
 				var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 				// get current user based on local storage
@@ -37,7 +37,7 @@
 							alert(err.message || JSON.stringify(err));
 							return;
 						}
-						console.log('session validity: ' + session.isValid());
+						// console.log('session validity: ' + session.isValid());
 					});
 				} else {
 					// created update form DOM

@@ -87,8 +87,8 @@
 		function saveUser(user) {
 			/* get logged in user idToken */
 			var poolData = {
-				UserPoolId: 'us-east-1_8CV7DHfIl', // Your user pool id here
-				ClientId: '18dk7qmcdfcgnqeqg3gfdb76rk' // Your client id here
+				UserPoolId: 'us-east-1_fIIpe0d9e', // Your user pool id here
+				ClientId: '48d0a2d8dq14iivse1t20nrd7h' // Your client id here
 			};
 			var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 			// get current user based on local storage
@@ -102,7 +102,7 @@
 					}
 					// console.log('TOKEN', session.getIdToken().getJwtToken());
 					/* post user to Dynamo Db */
-					atomic('https://2yll05l1ek.execute-api.us-east-1.amazonaws.com/development/users/create', {
+					atomic('https://3ou38g64pb.execute-api.us-east-1.amazonaws.com/dev1/users/create', {
 						method: 'POST',
 						headers: {
 							'Authorization': session.getIdToken().getJwtToken(),
@@ -118,7 +118,7 @@
 						}
 					})
 						.then(function (response) {
-							console.log(response);
+							// console.log(response);
 							// console.log(response.data); // xhr.responseText
 							// console.log(response.xhr);  // full response
 						})

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+{{> global-head}}
+<body>
+	<header class="container container-small">
+		<div class="row row-between">
+			<h1><a href="/" class="link-none">My Home</a></h1>
+		</div>
+	</header>
+	<main id="main" class="container container-small">
+		<h2>Offline Workers</h2>
+		<div class="workers-wrapper">		
+			<div class="worker">
+				<div class="worker-detail-wrapper">
+					<div class="worker-name">
+						<h3>An Example Offline Worker</h3>
+					</div>
+					<div class="worker-description">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim diam quis enim lobortis scelerisque fermentum dui.</p>
+					</div>
+					<div class="worker-project-type">
+						<p>Kitchen Remodel</p>
+					</div>
+				</div>
+				<div class="worker-actions">
+					<button class="btn">Save Worker</button>
+					<button class="js-select-worker btn">Select Worker</button>
+				</div>
+			</div>
+			<div class="worker">
+				<div class="worker-detail-wrapper">
+					<div class="worker-name">
+						<h3>Another Offline Worker</h3>
+					</div>
+					<div class="worker-description">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim diam quis enim lobortis scelerisque fermentum dui.</p>
+					</div>
+					<div class="worker-project-type">
+						<p>Kitchen Remodel</p>
+					</div>
+				</div>
+				<div class="worker-actions">
+					<button class="btn">Save Worker</button>
+					<button class="js-select-worker btn">Select Worker</button>
+				</div>
+			</div>
+		</div>
+	</main>
+	<script type="text/javascript">
+		/* attach events */
+		var selectWorkerTriggers = document.querySelectorAll('.js-select-worker');
+		if( selectWorkerTriggers ) {
+			selectWorkerTriggers.forEach(function(selectWorkerTrigger) {
+				selectWorkerTrigger.addEventListener('click', function(e) {
+					window.location.href = "/project-create.html";
+				});
+			})
+		}
+	</script>
+</body>
